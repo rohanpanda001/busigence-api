@@ -1,4 +1,4 @@
 Flask==0.12.2
-gunicorn==19.7.1
-mysql-connector-python==8.0.12
+pandas==0.25.1
+flask-mysql==1.4.0
 flask_cors==3.0.6

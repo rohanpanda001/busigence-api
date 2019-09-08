@@ -13,11 +13,22 @@ Start mysql server
 
 ## Set up Database
 
-CREATE DATABASE weavedin;
+CREATE DATABASE busigence;
 
-## Run Custom commands
+## Load Data into tables
+LOAD DATA LOCAL INFILE './customers.csv' 
+INTO TABLE customers 
+FIELDS TERMINATED BY ',' 
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS;
 
-import all the commands in invoice.sql and items.sql
+LOAD DATA LOCAL INFILE './orders.csv' 
+INTO TABLE orders 
+FIELDS TERMINATED BY ',' 
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS;
 
 ## python app.py
 
