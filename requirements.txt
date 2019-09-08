@@ -1,0 +1,4 @@
+Flask==0.12.2
+gunicorn==19.7.1
+mysql-connector-python==8.0.12
+flask_cors==3.0.6
