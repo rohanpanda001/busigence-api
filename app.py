@@ -47,10 +47,19 @@ def showTables():
 
 
 @app.route('/showRows', methods=['POST'])
-def showAll():
+def showRows():
     content = request.get_json()
     table = content['table']
     mycursor.execute("Select * from " + table)
+    result = mycursor.fetchall()
+    return json.dumps(result)
+
+
+@app.route('/showColumns', methods=['POST'])
+def showColumns():
+    content = request.get_json()
+    table = content['table']
+    mycursor.execute("Show columns from " + table)
     result = mycursor.fetchall()
     return json.dumps(result)
 
@@ -61,15 +70,28 @@ def proccessJoin():
     joinType = content['joinType']
     primaryKey = content['primaryKey']
     tableMap = content['tables']
+    columns = content['columns']
+    csv = content['csv']
+    importedTableData = content['importedTableData']
 
-    seperator = ', '
-    customers = tableMap['customers']
-    orders = tableMap['orders']
+    df_a = ''
+    df_b = ''
+    firstTable = columns[0]
+    secondTable = columns[1]
+    if csv:
+        firstTableData = importedTableData[firstTable]
+        secondTableData = importedTableData[secondTable]
+        df_a = pd.DataFrame.from_dict(firstTableData)
+        df_b = pd.DataFrame.from_dict(secondTableData)
+    else:
+        seperator = ', '
+        firstTableData = tableMap[firstTable]
+        secondTableData = tableMap[secondTable]
 
-    df_a = pd.read_sql(
-        "Select " + seperator.join(customers) + " from customers", conn)
-    df_b = pd.read_sql("Select " + seperator.join(orders) +
-                       " from orders", conn)
+        df_a = pd.read_sql(
+            "Select " + seperator.join(firstTableData) + " from " + firstTable, conn)
+        df_b = pd.read_sql("Select " + seperator.join(secondTableData) +
+                           " from " + secondTable, conn)
 
     df_c = pd.merge(df_a, df_b, on=primaryKey, how=joinType)
     response = df_c.to_json(orient='index')
